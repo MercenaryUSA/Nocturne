@@ -1,0 +1,1185 @@
+/**
+ * @name Nocturne
+ * @author MercenaryUSA
+ * @source https://github.com/MercenaryUSA/Nocturne
+ * @version 1.2.0
+ * @description A modern, glossy dark theme: deep slate surfaces, a soft violet accent, frosted floating panels, a drifting ambient glow and fluid animations. Uses Plus Jakarta Sans.
+ */
+
+/* Fonts (imports must stay at the top of the file).
+   Google Fonts first; jsdelivr serves the same fonts as a fallback. */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/plus-jakarta-sans@5/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5/index.css");
+
+/* =========================================================================
+   1. KNOBS: change these to restyle the whole theme
+   ========================================================================= */
+:root {
+    /* Fonts */
+    --nc-font: "Plus Jakarta Sans", "Plus Jakarta Sans Variable", "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --nc-font-code: "JetBrains Mono", "JetBrains Mono Variable", "gg mono", Consolas, "Courier New", monospace;
+
+    /* Accent (soft violet) + a secondary hue used in gradients */
+    --nc-accent: #8b7cf6;
+    --nc-accent-hsl: 248 88% 73%;
+    --nc-accent-2: #6aa8ff;
+    --nc-accent-strong: #7461f0;
+    --nc-accent-soft: color-mix(in oklab, var(--nc-accent) 16%, transparent);
+    --nc-accent-softer: color-mix(in oklab, var(--nc-accent) 9%, transparent);
+
+    /* Surfaces, darkest -> lightest */
+    --nc-bg-0: #0b0c11;   /* app frame / server bar */
+    --nc-bg-1: #11131a;   /* chat */
+    --nc-bg-2: #151821;   /* channel sidebar */
+    --nc-surface-1: #1a1d27;
+    --nc-surface-2: #1f2330;
+    --nc-surface-3: #262a39;
+
+    /* Text */
+    --nc-text-strong: #f4f5fa;
+    --nc-text: #d6d9e3;
+    --nc-text-muted: #8d92a6;
+    --nc-text-subtle: #6a6f84;
+    --nc-link: #a5b8ff;
+
+    /* Lines */
+    --nc-line-1: rgb(255 255 255 / 0.05);
+    --nc-line-2: rgb(255 255 255 / 0.08);
+    --nc-line-3: rgb(255 255 255 / 0.13);
+
+    /* Shape */
+    --nc-radius-sm: 8px;
+    --nc-radius-md: 12px;
+    --nc-radius-lg: 16px;
+
+    /* Motion */
+    --nc-ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+    --nc-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+    --nc-fast: 150ms;
+    --nc-med: 240ms;
+    --nc-slow: 380ms;
+    --nc-ambient-speed: 48s;   /* drifting background glow; set to 0s to stop it */
+
+    /* Gloss */
+    --nc-glass: color-mix(in oklab, var(--nc-surface-2) 78%, transparent);
+    --nc-blur: blur(20px) saturate(1.5);
+    --nc-sheen: linear-gradient(180deg, rgb(255 255 255 / 0.075) 0%, rgb(255 255 255 / 0.02) 38%, rgb(255 255 255 / 0) 60%);
+    --nc-edge: inset 0 1px 0 rgb(255 255 255 / 0.09), inset 0 0 0 1px rgb(255 255 255 / 0.025);
+    --nc-shadow: 0 18px 48px -12px rgb(0 0 0 / 0.65), 0 2px 6px rgb(0 0 0 / 0.35);
+    --nc-glow: 0 0 0 1px color-mix(in oklab, var(--nc-accent) 45%, transparent), 0 8px 28px -6px color-mix(in oklab, var(--nc-accent) 55%, transparent);
+}
+
+/* =========================================================================
+   2. BASE PALETTE
+   Discord builds every colour (buttons, selected rows, highlights,
+   toggles...) from these scales. Recolouring them themes the places
+   that have no token of their own.
+   ========================================================================= */
+:root {
+    /* neutral scale: slate tint, slightly deeper darks */
+    --neutral-1-hsl: 228 calc(var(--saturation-factor, 1)*0%) 100%;
+    --neutral-2-hsl: 228 calc(var(--saturation-factor, 1)*4%) 98.4%;
+    --neutral-3-hsl: 228 calc(var(--saturation-factor, 1)*10.7%) 97.1%;
+    --neutral-4-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 95.5%;
+    --neutral-5-hsl: 228 calc(var(--saturation-factor, 1)*10.7%) 94.1%;
+    --neutral-6-hsl: 228 calc(var(--saturation-factor, 1)*9.3%) 92.5%;
+    --neutral-7-hsl: 228 calc(var(--saturation-factor, 1)*8.5%) 91.4%;
+    --neutral-8-hsl: 228 calc(var(--saturation-factor, 1)*7.8%) 89.8%;
+    --neutral-9-hsl: 228 calc(var(--saturation-factor, 1)*9.1%) 88.4%;
+    --neutral-10-hsl: 228 calc(var(--saturation-factor, 1)*8.5%) 86.9%;
+    --neutral-11-hsl: 228 calc(var(--saturation-factor, 1)*9.4%) 85.5%;
+    --neutral-12-hsl: 228 calc(var(--saturation-factor, 1)*8.9%) 83.9%;
+    --neutral-13-hsl: 228 calc(var(--saturation-factor, 1)*8.5%) 82.7%;
+    --neutral-14-hsl: 228 calc(var(--saturation-factor, 1)*8.2%) 81.2%;
+    --neutral-15-hsl: 228 calc(var(--saturation-factor, 1)*8.9%) 79.8%;
+    --neutral-16-hsl: 228 calc(var(--saturation-factor, 1)*8.5%) 78.2%;
+    --neutral-17-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 77.1%;
+    --neutral-18-hsl: 228 calc(var(--saturation-factor, 1)*8%) 75.5%;
+    --neutral-19-hsl: 228 calc(var(--saturation-factor, 1)*8.5%) 74.1%;
+    --neutral-20-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 72.5%;
+    --neutral-21-hsl: 228 calc(var(--saturation-factor, 1)*8.1%) 71.4%;
+    --neutral-22-hsl: 228 calc(var(--saturation-factor, 1)*8.6%) 70%;
+    --neutral-23-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 68.4%;
+    --neutral-24-hsl: 228 calc(var(--saturation-factor, 1)*8.2%) 67.3%;
+    --neutral-25-hsl: 228 calc(var(--saturation-factor, 1)*8%) 65.7%;
+    --neutral-26-hsl: 228 calc(var(--saturation-factor, 1)*8.4%) 64.3%;
+    --neutral-27-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 63.1%;
+    --neutral-28-hsl: 228 calc(var(--saturation-factor, 1)*8.1%) 61.6%;
+    --neutral-29-hsl: 228 calc(var(--saturation-factor, 1)*8%) 60.4%;
+    --neutral-30-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 59%;
+    --neutral-31-hsl: 228 calc(var(--saturation-factor, 1)*7.7%) 57.6%;
+    --neutral-32-hsl: 228 calc(var(--saturation-factor, 1)*8%) 56.3%;
+    --neutral-33-hsl: 228 calc(var(--saturation-factor, 1)*7.9%) 55.1%;
+    --neutral-34-hsl: 228 calc(var(--saturation-factor, 1)*7.8%) 53.5%;
+    --neutral-35-hsl: 228 calc(var(--saturation-factor, 1)*7.7%) 52.4%;
+    --neutral-36-hsl: 228 calc(var(--saturation-factor, 1)*8%) 51%;
+    --neutral-37-hsl: 228 calc(var(--saturation-factor, 1)*7.6%) 49.6%;
+    --neutral-38-hsl: 228 calc(var(--saturation-factor, 1)*8.1%) 48.2%;
+    --neutral-39-hsl: 228 calc(var(--saturation-factor, 1)*8.2%) 47.1%;
+    --neutral-40-hsl: 228 calc(var(--saturation-factor, 1)*8.3%) 45.9%;
+    --neutral-41-hsl: 228 calc(var(--saturation-factor, 1)*8.6%) 44.2%;
+    --neutral-42-hsl: 228 calc(var(--saturation-factor, 1)*8.9%) 42.9%;
+    --neutral-43-hsl: 228 calc(var(--saturation-factor, 1)*9.2%) 41.7%;
+    --neutral-44-hsl: 228 calc(var(--saturation-factor, 1)*10%) 40.2%;
+    --neutral-45-hsl: 228 calc(var(--saturation-factor, 1)*10.3%) 39%;
+    --neutral-46-hsl: 228 calc(var(--saturation-factor, 1)*10.6%) 37.7%;
+    --neutral-47-hsl: 228 calc(var(--saturation-factor, 1)*10.5%) 36.3%;
+    --neutral-48-hsl: 228 calc(var(--saturation-factor, 1)*11.4%) 34.8%;
+    --neutral-49-hsl: 228 calc(var(--saturation-factor, 1)*11.8%) 33.6%;
+    --neutral-50-hsl: 228 calc(var(--saturation-factor, 1)*12.2%) 32.4%;
+    --neutral-51-hsl: 228 calc(var(--saturation-factor, 1)*12.5%) 31.5%;
+    --neutral-52-hsl: 228 calc(var(--saturation-factor, 1)*12.2%) 30.9%;
+    --neutral-53-hsl: 228 calc(var(--saturation-factor, 1)*13.1%) 30.2%;
+    --neutral-54-hsl: 228 calc(var(--saturation-factor, 1)*12.7%) 29.6%;
+    --neutral-55-hsl: 228 calc(var(--saturation-factor, 1)*13.1%) 28.8%;
+    --neutral-56-hsl: 228 calc(var(--saturation-factor, 1)*12.7%) 28.1%;
+    --neutral-57-hsl: 228 calc(var(--saturation-factor, 1)*13%) 27.3%;
+    --neutral-58-hsl: 228 calc(var(--saturation-factor, 1)*13.3%) 26.9%;
+    --neutral-59-hsl: 228 calc(var(--saturation-factor, 1)*13.6%) 26%;
+    --neutral-60-hsl: 228 calc(var(--saturation-factor, 1)*14%) 25.2%;
+    --neutral-61-hsl: 228 calc(var(--saturation-factor, 1)*13.6%) 24.6%;
+    --neutral-62-hsl: 228 calc(var(--saturation-factor, 1)*14.6%) 24%;
+    --neutral-63-hsl: 228 calc(var(--saturation-factor, 1)*14.2%) 23.4%;
+    --neutral-64-hsl: 228 calc(var(--saturation-factor, 1)*14.6%) 22.6%;
+    --neutral-65-hsl: 228 calc(var(--saturation-factor, 1)*14.8%) 22.2%;
+    --neutral-66-hsl: 228 calc(var(--saturation-factor, 1)*15.2%) 21.4%;
+    --neutral-67-hsl: 228 calc(var(--saturation-factor, 1)*14.7%) 20.8%;
+    --neutral-68-hsl: 228 calc(var(--saturation-factor, 1)*14.1%) 20.2%;
+    --neutral-69-hsl: 228 calc(var(--saturation-factor, 1)*15.4%) 19.6%;
+    --neutral-70-hsl: 228 calc(var(--saturation-factor, 1)*14.8%) 19%;
+    --neutral-71-hsl: 228 calc(var(--saturation-factor, 1)*15.2%) 18.2%;
+    --neutral-72-hsl: 228 calc(var(--saturation-factor, 1)*15.5%) 17.8%;
+    --neutral-73-hsl: 228 calc(var(--saturation-factor, 1)*15.9%) 17%;
+    --neutral-74-hsl: 228 calc(var(--saturation-factor, 1)*16.2%) 16.6%;
+    --neutral-75-hsl: 228 calc(var(--saturation-factor, 1)*16.7%) 15.8%;
+    --neutral-76-hsl: 228 calc(var(--saturation-factor, 1)*15.9%) 15.3%;
+    --neutral-77-hsl: 228 calc(var(--saturation-factor, 1)*16.2%) 14.9%;
+    --neutral-78-hsl: 228 calc(var(--saturation-factor, 1)*16.7%) 14.1%;
+    --neutral-79-hsl: 228 calc(var(--saturation-factor, 1)*17%) 13.7%;
+    --neutral-80-hsl: 228 calc(var(--saturation-factor, 1)*17.5%) 13%;
+    --neutral-81-hsl: 228 calc(var(--saturation-factor, 1)*16.5%) 12.4%;
+    --neutral-82-hsl: 228 calc(var(--saturation-factor, 1)*16.9%) 12%;
+    --neutral-83-hsl: 228 calc(var(--saturation-factor, 1)*17.4%) 11.3%;
+    --neutral-84-hsl: 228 calc(var(--saturation-factor, 1)*17.8%) 10.9%;
+    --neutral-85-hsl: 228 calc(var(--saturation-factor, 1)*18.4%) 10.2%;
+    --neutral-86-hsl: 228 calc(var(--saturation-factor, 1)*18.8%) 9.8%;
+    --neutral-87-hsl: 228 calc(var(--saturation-factor, 1)*17.5%) 9.3%;
+    --neutral-88-hsl: 228 calc(var(--saturation-factor, 1)*20%) 8.7%;
+    --neutral-89-hsl: 228 calc(var(--saturation-factor, 1)*18.5%) 8.2%;
+    --neutral-90-hsl: 228 calc(var(--saturation-factor, 1)*19%) 7.8%;
+    --neutral-91-hsl: 228 calc(var(--saturation-factor, 1)*19.8%) 7.1%;
+    --neutral-92-hsl: 228 calc(var(--saturation-factor, 1)*17.9%) 6.5%;
+    --neutral-93-hsl: 228 calc(var(--saturation-factor, 1)*21.4%) 6%;
+    --neutral-94-hsl: 228 calc(var(--saturation-factor, 1)*19.7%) 5.1%;
+    --neutral-95-hsl: 228 calc(var(--saturation-factor, 1)*20.9%) 4.4%;
+    --neutral-96-hsl: 228 calc(var(--saturation-factor, 1)*22.4%) 3.8%;
+    --neutral-97-hsl: 228 calc(var(--saturation-factor, 1)*26%) 2.7%;
+    --neutral-98-hsl: 228 calc(var(--saturation-factor, 1)*22.8%) 1.9%;
+    --neutral-99-hsl: 228 calc(var(--saturation-factor, 1)*26%) 0.8%;
+    --neutral-100-hsl: 228 calc(var(--saturation-factor, 1)*14%) 0%;
+    /* blurple scale -> soft violet */
+    --blurple-1-hsl: 250 calc(var(--saturation-factor, 1)*88%) 95.1%;
+    --blurple-2-hsl: 250 calc(var(--saturation-factor, 1)*88%) 94.5%;
+    --blurple-3-hsl: 250 calc(var(--saturation-factor, 1)*88%) 93.7%;
+    --blurple-4-hsl: 250 calc(var(--saturation-factor, 1)*88%) 92.9%;
+    --blurple-5-hsl: 250 calc(var(--saturation-factor, 1)*88%) 92.4%;
+    --blurple-6-hsl: 250 calc(var(--saturation-factor, 1)*88%) 91.6%;
+    --blurple-7-hsl: 250 calc(var(--saturation-factor, 1)*88%) 91%;
+    --blurple-8-hsl: 250 calc(var(--saturation-factor, 1)*88%) 90.2%;
+    --blurple-9-hsl: 250 calc(var(--saturation-factor, 1)*88%) 89.6%;
+    --blurple-10-hsl: 250 calc(var(--saturation-factor, 1)*88%) 89%;
+    --blurple-11-hsl: 250 calc(var(--saturation-factor, 1)*88%) 88.2%;
+    --blurple-12-hsl: 250 calc(var(--saturation-factor, 1)*88%) 87.6%;
+    --blurple-13-hsl: 250 calc(var(--saturation-factor, 1)*88%) 86.9%;
+    --blurple-14-hsl: 250 calc(var(--saturation-factor, 1)*88%) 86.3%;
+    --blurple-15-hsl: 250 calc(var(--saturation-factor, 1)*88%) 85.7%;
+    --blurple-16-hsl: 250 calc(var(--saturation-factor, 1)*88%) 85.1%;
+    --blurple-17-hsl: 250 calc(var(--saturation-factor, 1)*88%) 84.5%;
+    --blurple-18-hsl: 250 calc(var(--saturation-factor, 1)*88%) 83.7%;
+    --blurple-19-hsl: 250 calc(var(--saturation-factor, 1)*88%) 83.1%;
+    --blurple-20-hsl: 250 calc(var(--saturation-factor, 1)*88%) 82.5%;
+    --blurple-21-hsl: 250 calc(var(--saturation-factor, 1)*88%) 82%;
+    --blurple-22-hsl: 250 calc(var(--saturation-factor, 1)*88%) 81.4%;
+    --blurple-23-hsl: 250 calc(var(--saturation-factor, 1)*88%) 80.8%;
+    --blurple-24-hsl: 250 calc(var(--saturation-factor, 1)*88%) 80.2%;
+    --blurple-25-hsl: 250 calc(var(--saturation-factor, 1)*88%) 79.6%;
+    --blurple-26-hsl: 250 calc(var(--saturation-factor, 1)*88%) 79%;
+    --blurple-27-hsl: 250 calc(var(--saturation-factor, 1)*86.4%) 78.2%;
+    --blurple-28-hsl: 250 calc(var(--saturation-factor, 1)*86.4%) 77.8%;
+    --blurple-29-hsl: 250 calc(var(--saturation-factor, 1)*85%) 77.1%;
+    --blurple-30-hsl: 250 calc(var(--saturation-factor, 1)*85.1%) 76.5%;
+    --blurple-31-hsl: 250 calc(var(--saturation-factor, 1)*83.7%) 75.7%;
+    --blurple-32-hsl: 250 calc(var(--saturation-factor, 1)*82.5%) 74.9%;
+    --blurple-33-hsl: 250 calc(var(--saturation-factor, 1)*82.6%) 74.5%;
+    --blurple-34-hsl: 250 calc(var(--saturation-factor, 1)*81.4%) 73.7%;
+    --blurple-35-hsl: 250 calc(var(--saturation-factor, 1)*81.5%) 73.3%;
+    --blurple-36-hsl: 250 calc(var(--saturation-factor, 1)*80.5%) 72.5%;
+    --blurple-37-hsl: 250 calc(var(--saturation-factor, 1)*80.6%) 72%;
+    --blurple-38-hsl: 250 calc(var(--saturation-factor, 1)*79.6%) 71.4%;
+    --blurple-39-hsl: 250 calc(var(--saturation-factor, 1)*79.7%) 70.8%;
+    --blurple-40-hsl: 250 calc(var(--saturation-factor, 1)*78.7%) 70.2%;
+    --blurple-41-hsl: 250 calc(var(--saturation-factor, 1)*77.8%) 69.4%;
+    --blurple-42-hsl: 250 calc(var(--saturation-factor, 1)*78%) 69%;
+    --blurple-43-hsl: 250 calc(var(--saturation-factor, 1)*77.1%) 68.4%;
+    --blurple-44-hsl: 250 calc(var(--saturation-factor, 1)*77.3%) 67.8%;
+    --blurple-45-hsl: 250 calc(var(--saturation-factor, 1)*76.4%) 67.3%;
+    --blurple-46-hsl: 250 calc(var(--saturation-factor, 1)*76.5%) 66.9%;
+    --blurple-47-hsl: 250 calc(var(--saturation-factor, 1)*75.7%) 66.3%;
+    --blurple-48-hsl: 250 calc(var(--saturation-factor, 1)*75.9%) 65.9%;
+    --blurple-49-hsl: 250 calc(var(--saturation-factor, 1)*75.1%) 65.1%;
+    --blurple-50-hsl: 250 calc(var(--saturation-factor, 1)*75.3%) 64.7%;
+    --blurple-51-hsl: 250 calc(var(--saturation-factor, 1)*70.2%) 63.1%;
+    --blurple-52-hsl: 250 calc(var(--saturation-factor, 1)*65.6%) 61.6%;
+    --blurple-53-hsl: 250 calc(var(--saturation-factor, 1)*61.3%) 60%;
+    --blurple-54-hsl: 250 calc(var(--saturation-factor, 1)*58%) 58.6%;
+    --blurple-55-hsl: 250 calc(var(--saturation-factor, 1)*54.2%) 57.1%;
+    --blurple-56-hsl: 250 calc(var(--saturation-factor, 1)*51.4%) 55.7%;
+    --blurple-57-hsl: 250 calc(var(--saturation-factor, 1)*48.7%) 54.3%;
+    --blurple-58-hsl: 250 calc(var(--saturation-factor, 1)*45.6%) 52.7%;
+    --blurple-59-hsl: 250 calc(var(--saturation-factor, 1)*43.3%) 51.4%;
+    --blurple-60-hsl: 250 calc(var(--saturation-factor, 1)*41.1%) 50%;
+    --blurple-61-hsl: 250 calc(var(--saturation-factor, 1)*41.2%) 48.6%;
+    --blurple-62-hsl: 250 calc(var(--saturation-factor, 1)*41.3%) 47.3%;
+    --blurple-63-hsl: 250 calc(var(--saturation-factor, 1)*41.6%) 46.1%;
+    --blurple-64-hsl: 250 calc(var(--saturation-factor, 1)*41.7%) 44.7%;
+    --blurple-65-hsl: 250 calc(var(--saturation-factor, 1)*41.8%) 43.3%;
+    --blurple-66-hsl: 250 calc(var(--saturation-factor, 1)*42.2%) 42.2%;
+    --blurple-67-hsl: 250 calc(var(--saturation-factor, 1)*42.3%) 40.8%;
+    --blurple-68-hsl: 250 calc(var(--saturation-factor, 1)*42.7%) 39.6%;
+    --blurple-69-hsl: 250 calc(var(--saturation-factor, 1)*42.9%) 38.2%;
+    --blurple-70-hsl: 250 calc(var(--saturation-factor, 1)*43.3%) 37.1%;
+    --blurple-71-hsl: 250 calc(var(--saturation-factor, 1)*43.5%) 35.7%;
+    --blurple-72-hsl: 250 calc(var(--saturation-factor, 1)*44%) 34.5%;
+    --blurple-73-hsl: 250 calc(var(--saturation-factor, 1)*43.7%) 33.5%;
+    --blurple-74-hsl: 250 calc(var(--saturation-factor, 1)*44.3%) 32.4%;
+    --blurple-75-hsl: 250 calc(var(--saturation-factor, 1)*44.8%) 31.2%;
+    --blurple-76-hsl: 250 calc(var(--saturation-factor, 1)*45.2%) 29.8%;
+    --blurple-77-hsl: 250 calc(var(--saturation-factor, 1)*45.8%) 28.6%;
+    --blurple-78-hsl: 250 calc(var(--saturation-factor, 1)*46.5%) 27.5%;
+    --blurple-79-hsl: 250 calc(var(--saturation-factor, 1)*47.3%) 26.3%;
+    --blurple-80-hsl: 250 calc(var(--saturation-factor, 1)*47.1%) 25.3%;
+    --blurple-81-hsl: 250 calc(var(--saturation-factor, 1)*47.9%) 24.1%;
+    --blurple-82-hsl: 250 calc(var(--saturation-factor, 1)*48.9%) 22.9%;
+    --blurple-83-hsl: 250 calc(var(--saturation-factor, 1)*49.9%) 21.8%;
+    --blurple-84-hsl: 250 calc(var(--saturation-factor, 1)*50.2%) 21%;
+    --blurple-85-hsl: 250 calc(var(--saturation-factor, 1)*51.4%) 19.8%;
+    --blurple-86-hsl: 250 calc(var(--saturation-factor, 1)*51.3%) 18.8%;
+    --blurple-87-hsl: 250 calc(var(--saturation-factor, 1)*52.8%) 17.6%;
+    --blurple-88-hsl: 250 calc(var(--saturation-factor, 1)*54.9%) 16.7%;
+    --blurple-89-hsl: 250 calc(var(--saturation-factor, 1)*55%) 15.7%;
+    --blurple-90-hsl: 250 calc(var(--saturation-factor, 1)*57.1%) 14.5%;
+    --blurple-91-hsl: 250 calc(var(--saturation-factor, 1)*57.8%) 13.7%;
+    --blurple-92-hsl: 250 calc(var(--saturation-factor, 1)*60.5%) 12.5%;
+    --blurple-93-hsl: 250 calc(var(--saturation-factor, 1)*61.2%) 11.6%;
+    --blurple-94-hsl: 250 calc(var(--saturation-factor, 1)*61.9%) 10.6%;
+    --blurple-95-hsl: 250 calc(var(--saturation-factor, 1)*65.5%) 9.2%;
+    --blurple-96-hsl: 250 calc(var(--saturation-factor, 1)*66.5%) 8%;
+    --blurple-97-hsl: 250 calc(var(--saturation-factor, 1)*67.3%) 6.7%;
+    --blurple-98-hsl: 250 calc(var(--saturation-factor, 1)*66.9%) 4.9%;
+    --blurple-99-hsl: 250 calc(var(--saturation-factor, 1)*74.5%) 2.5%;
+    --blurple-100-hsl: 250 calc(var(--saturation-factor, 1)*0%) 0%;
+    /* translucent overlays (hover / selected): faint violet-white */
+    --opacity-1-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-4-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-8-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-12-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-16-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-20-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-24-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-28-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-32-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-36-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-40-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-44-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-48-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-52-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-56-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-60-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-64-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-68-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-72-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-76-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-80-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-84-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-88-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-92-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+    --opacity-96-hsl: 245 calc(var(--saturation-factor, 1)*22%) 72%;
+}
+
+/* =========================================================================
+   3. TYPOGRAPHY
+   html:root:root outranks Discord's per-language :root:lang() font rules.
+   ========================================================================= */
+html:root:root {
+    --font-primary: var(--nc-font);
+    --font-display: var(--nc-font);
+    --font-headline: var(--nc-font);
+    --font-code: var(--nc-font-code);
+    --primitive-typography-family-dm-sans: var(--nc-font);
+    --primitive-typography-family-rethink-sans: var(--nc-font);
+}
+body {
+    font-family: var(--nc-font);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* =========================================================================
+   4. DISCORD DESIGN TOKENS
+   Applies to every dark variant (Dark / Darker / Midnight), but not to
+   Nitro profile themes, which keep their own colours.
+   ========================================================================= */
+:root:is(.theme-dark, .theme-darker, .theme-midnight),
+:root :is(.theme-dark, .theme-darker, .theme-midnight):not(.custom-user-profile-theme) {
+    /* Backgrounds */
+    --app-frame-background: var(--nc-bg-0);
+    --background-base-lowest: var(--nc-bg-0);
+    --background-base-lower: var(--nc-bg-1);
+    --background-base-low: var(--nc-bg-2);
+    --background-surface-high: var(--nc-surface-1);
+    --background-surface-higher: var(--nc-surface-2);
+    --background-surface-highest: var(--nc-surface-3);
+    --background-mod-subtle: rgb(255 255 255 / 0.035);
+    --background-mod-muted: rgb(255 255 255 / 0.05);
+    --background-mod-normal: rgb(255 255 255 / 0.07);
+    --background-mod-strong: rgb(255 255 255 / 0.11);
+    --background-code: #0e1016;
+    --background-scrim: rgb(5 6 10 / 0.72);
+    --background-brand: var(--nc-accent-strong);
+    --background-accent: var(--nc-accent-strong);
+    --modal-background: var(--nc-surface-1);
+    --card-background-default: var(--nc-surface-1);
+    --chat-background-default: var(--nc-surface-1);
+    --custom-channel-members-bg: var(--nc-bg-1);
+
+    /* Brand / accent */
+    --brand-360: color-mix(in oklab, var(--nc-accent) 70%, white);
+    --brand-400: color-mix(in oklab, var(--nc-accent) 85%, white);
+    --brand-500: var(--nc-accent);
+    --brand-500-hsl: var(--nc-accent-hsl);
+    --brand-560: var(--nc-accent-strong);
+    --brand-600: color-mix(in oklab, var(--nc-accent-strong) 85%, black);
+    --text-brand: var(--nc-accent);
+    --icon-brand: var(--nc-accent);
+    --control-primary-background-default: var(--nc-accent-strong);
+    --control-primary-background-hover: color-mix(in oklab, var(--nc-accent-strong) 88%, white);
+    --control-primary-background-active: color-mix(in oklab, var(--nc-accent-strong) 85%, black);
+    --control-secondary-background-default: rgb(255 255 255 / 0.06);
+    --control-secondary-background-hover: rgb(255 255 255 / 0.10);
+    --control-secondary-background-active: rgb(255 255 255 / 0.13);
+    --control-secondary-border-default: var(--nc-line-2);
+    --control-secondary-border-hover: var(--nc-line-3);
+    --control-secondary-border-active: var(--nc-line-3);
+    --togglebutton-background-selected: var(--nc-accent-soft);
+    --togglebutton-border-selected: color-mix(in oklab, var(--nc-accent) 50%, transparent);
+    --reaction-background-active: var(--nc-accent-soft);
+    --reaction-border-active: color-mix(in oklab, var(--nc-accent) 55%, transparent);
+    --radio-border-selected-default: var(--nc-accent);
+    --keyword-highlight-background: color-mix(in oklab, var(--nc-accent) 30%, transparent);
+
+    /* Text */
+    --text-strong: var(--nc-text-strong);
+    --text-default: var(--nc-text);
+    --text-muted: var(--nc-text-muted);
+    --text-subtle: var(--nc-text-subtle);
+    --text-link: var(--nc-link);
+    --chat-text-muted: var(--nc-text-muted);
+    --channels-default: var(--nc-text-muted);
+
+    /* Interactive: hover / pressed / selected rows everywhere */
+    --interactive-text-default: var(--nc-text-muted);
+    --interactive-text-hover: var(--nc-text);
+    --interactive-text-active: var(--nc-text-strong);
+    --interactive-icon-default: var(--nc-text-muted);
+    --interactive-icon-hover: var(--nc-text);
+    --interactive-icon-active: var(--nc-text-strong);
+    --interactive-muted: color-mix(in oklab, var(--nc-text-subtle) 70%, transparent);
+    --interactive-background-hover: rgb(255 255 255 / 0.045);
+    --interactive-background-active: rgb(255 255 255 / 0.07);
+    --interactive-background-selected: var(--nc-accent-soft);
+    --interactive-accent-background-default: var(--nc-accent-soft);
+    --icon-default: var(--nc-text);
+    --icon-muted: var(--nc-text-muted);
+    --icon-subtle: var(--nc-text-subtle);
+    --icon-strong: var(--nc-text-strong);
+
+    /* Lines */
+    --border-subtle: var(--nc-line-1);
+    --border-muted: var(--nc-line-1);
+    --border-normal: var(--nc-line-2);
+    --border-strong: var(--nc-line-3);
+    --border-focus: var(--nc-accent);
+    --app-frame-border: var(--nc-line-1);
+    --chat-border: var(--nc-line-1);
+
+    /* Inputs */
+    --input-background-default: var(--nc-surface-1);
+    --input-border-default: var(--nc-line-2);
+    --input-border-hover: var(--nc-line-3);
+    --input-border-active: var(--nc-accent);
+    --input-placeholder-text-default: var(--nc-text-subtle);
+    --input-text-default: var(--nc-text);
+
+    /* Messages */
+    --message-background-hover: rgb(255 255 255 / 0.025);
+    --message-highlight-background-default: var(--nc-accent-softer);
+    --message-highlight-background-hover: var(--nc-accent-soft);
+    --message-mentioned-background-default: color-mix(in oklab, #f5b962 9%, transparent);
+    --message-mentioned-background-hover: color-mix(in oklab, #f5b962 13%, transparent);
+
+    /* Scrollbars */
+    --scrollbar-auto-thumb: rgb(255 255 255 / 0.10);
+    --scrollbar-auto-track: transparent;
+    --scrollbar-thin-thumb: rgb(255 255 255 / 0.10);
+    --scrollbar-thin-track: transparent;
+
+    /* Elevation */
+    --shadow-low: 0 1px 3px rgb(0 0 0 / 0.35);
+    --shadow-medium: 0 8px 24px -6px rgb(0 0 0 / 0.5);
+    --shadow-high: var(--nc-shadow);
+}
+
+::selection {
+    background: color-mix(in oklab, var(--nc-accent) 38%, transparent);
+}
+
+/* =========================================================================
+   5. APP SHELL
+   ========================================================================= */
+
+/* App frame with a slowly drifting ambient glow behind everything */
+.bg_Fd0FEH {
+    overflow: hidden;
+}
+.bg_Fd0FEH::before {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    pointer-events: none;
+    background:
+        radial-gradient(38% 42% at 78% 18%, color-mix(in oklab, var(--nc-accent) 16%, transparent), transparent 70%),
+        radial-gradient(34% 40% at 18% 82%, color-mix(in oklab, var(--nc-accent-2) 12%, transparent), transparent 70%),
+        radial-gradient(26% 30% at 55% 55%, color-mix(in oklab, #c77dff 8%, transparent), transparent 70%);
+    will-change: transform;
+}
+
+.bar_3zSH5d {
+    background: transparent;
+}
+
+/* Channel sidebar */
+.sidebarList_pog62O {
+    background: var(--nc-sheen), var(--nc-bg-2);
+    border-color: var(--nc-line-1) !important;
+}
+
+/* User panel (bottom-left): floating glass card */
+.panels_pog62O {
+    background: var(--nc-sheen), var(--nc-glass);
+    backdrop-filter: var(--nc-blur);
+    border: 1px solid var(--nc-line-2);
+    border-radius: var(--nc-radius-md);
+    box-shadow: var(--nc-edge), var(--nc-shadow);
+}
+
+/* =========================================================================
+   6. SERVER BAR
+   ========================================================================= */
+.blobContainer_IaPwK5 {
+    transition: transform var(--nc-med) var(--nc-ease-spring), filter var(--nc-med) var(--nc-ease);
+}
+.blobContainer_IaPwK5:hover {
+    transform: translateY(-1px) scale(1.06);
+    filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.5)) drop-shadow(0 0 10px color-mix(in oklab, var(--nc-accent) 30%, transparent));
+}
+.blobContainer_IaPwK5:active {
+    transform: scale(0.95);
+}
+.blobContainer_IaPwK5.selected_IaPwK5 {
+    filter: drop-shadow(0 0 12px color-mix(in oklab, var(--nc-accent) 45%, transparent));
+}
+.wrapper_JJ-hgR {
+    transition: background-color var(--nc-med) var(--nc-ease), color var(--nc-med) var(--nc-ease);
+}
+.guildSeparator_3WHVfy {
+    background: linear-gradient(90deg, transparent, var(--nc-line-3), transparent);
+    border-radius: 999px;
+}
+
+/* =========================================================================
+   7. CHANNEL LIST
+   Channel rows have no stable class, so these rules use Discord's list-item ids.
+   ========================================================================= */
+[data-list-item-id^="channels___"] {
+    border-radius: var(--nc-radius-sm) !important;
+    transition:
+        background-color var(--nc-fast) var(--nc-ease),
+        color var(--nc-fast) var(--nc-ease),
+        box-shadow var(--nc-med) var(--nc-ease),
+        transform var(--nc-med) var(--nc-ease-spring);
+}
+[data-list-item-id^="channels___"]:hover {
+    transform: translateX(3px);
+    box-shadow: var(--nc-edge);
+}
+[data-list-item-id^="channels___"]:active {
+    transform: translateX(3px) scale(0.98);
+}
+
+/* =========================================================================
+   8. CHAT
+   ========================================================================= */
+.chatContent_z_gUBg {
+    background: var(--nc-bg-1);
+}
+
+/* Channel header: faint gloss strip */
+.title_z_gUBg {
+    background-image: var(--nc-sheen);
+    border-bottom: 1px solid var(--nc-line-1);
+}
+
+/* Message rows: rounded hover card with an accent edge that slides in */
+.message_SY_P2T {
+    border-radius: var(--nc-radius-md) !important;
+    margin-inline: 8px;
+    box-shadow: inset 0 0 0 0 transparent;
+    transition:
+        background-color var(--nc-med) var(--nc-ease),
+        box-shadow var(--nc-med) var(--nc-ease);
+}
+.message_SY_P2T:hover {
+    box-shadow: inset 2px 0 0 0 color-mix(in oklab, var(--nc-accent) 70%, transparent), var(--nc-edge);
+}
+.mentioned_SY_P2T::before,
+.replying_SY_P2T::before {
+    border-radius: 999px;
+}
+
+/* Avatars pop slightly while hovering the message */
+.avatar_2i8Bfm {
+    transition: transform var(--nc-med) var(--nc-ease-spring), box-shadow var(--nc-med) var(--nc-ease);
+}
+.message_SY_P2T:hover .avatar_2i8Bfm {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px -4px rgb(0 0 0 / 0.6);
+}
+
+.repliedMessage_2i8Bfm::before {
+    border-color: var(--nc-line-3);
+}
+
+/* Code blocks + inline code */
+.markup_ku1OHH pre,
+.markup_ku1OHH code {
+    border-radius: var(--nc-radius-sm);
+    font-family: var(--nc-font-code);
+}
+.markup_ku1OHH pre {
+    border: 1px solid var(--nc-line-1);
+    box-shadow: var(--nc-edge);
+}
+.codeContainer_ku1OHH {
+    border-radius: var(--nc-radius-sm);
+}
+.blockquoteDivider_ku1OHH {
+    background: linear-gradient(180deg, var(--nc-accent), var(--nc-accent-2));
+    border-radius: 999px;
+}
+
+/* Embeds */
+.embedFull_XyW1ZT {
+    border-radius: var(--nc-radius-md);
+    background: var(--nc-sheen), var(--nc-surface-1);
+    border-top: 1px solid var(--nc-line-1);
+    border-right: 1px solid var(--nc-line-1);
+    border-bottom: 1px solid var(--nc-line-1);
+    box-shadow: var(--nc-edge);
+}
+
+/* Reactions: glossy pills that spring up on hover */
+.reaction_MmKct8 {
+    border-radius: 999px;
+    background-image: var(--nc-sheen);
+    box-shadow: var(--nc-edge);
+    transition:
+        transform var(--nc-med) var(--nc-ease-spring),
+        background-color var(--nc-fast) var(--nc-ease),
+        border-color var(--nc-fast) var(--nc-ease),
+        box-shadow var(--nc-med) var(--nc-ease);
+}
+.reaction_MmKct8:hover {
+    transform: translateY(-2px) scale(1.04);
+}
+.reaction_MmKct8:active {
+    transform: scale(0.94);
+}
+.reactionMe_MmKct8 {
+    background-color: var(--nc-accent-soft);
+    border-color: color-mix(in oklab, var(--nc-accent) 55%, transparent);
+    box-shadow: var(--nc-edge), 0 0 14px -4px color-mix(in oklab, var(--nc-accent) 60%, transparent);
+}
+
+/* =========================================================================
+   9. MESSAGE BOX
+   ========================================================================= */
+.channelTextArea_2x8-Qn .scrollableContainer_2x8-Qn {
+    background: var(--nc-sheen), var(--nc-surface-1);
+    border: 1px solid var(--nc-line-2);
+    border-radius: var(--nc-radius-lg);
+    box-shadow: var(--nc-edge);
+    transition:
+        border-color var(--nc-med) var(--nc-ease),
+        box-shadow var(--nc-slow) var(--nc-ease),
+        background-color var(--nc-med) var(--nc-ease);
+}
+.channelTextArea_2x8-Qn:focus-within .scrollableContainer_2x8-Qn {
+    border-color: color-mix(in oklab, var(--nc-accent) 55%, transparent);
+    box-shadow: var(--nc-edge), 0 0 0 4px var(--nc-accent-softer), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+}
+.channelTextArea_2x8-Qn .button_2x8-Qn {
+    transition: transform var(--nc-med) var(--nc-ease-spring), color var(--nc-fast) var(--nc-ease);
+}
+.channelTextArea_2x8-Qn .button_2x8-Qn:hover {
+    transform: scale(1.14) rotate(-4deg);
+}
+
+/* =========================================================================
+   10. MEMBER LIST
+   ========================================================================= */
+.container_86es0b,
+.members_86es0b,
+.member_86es0b {
+    background: var(--nc-bg-1);
+}
+.container_86es0b {
+    border-inline-start-color: var(--nc-line-1);
+}
+.container_J1Adu_ {
+    border-radius: var(--nc-radius-sm);
+    transition:
+        background-color var(--nc-fast) var(--nc-ease),
+        box-shadow var(--nc-med) var(--nc-ease),
+        transform var(--nc-med) var(--nc-ease-spring);
+}
+.container_J1Adu_:hover {
+    transform: translateX(3px);
+    box-shadow: var(--nc-edge);
+}
+.container_J1Adu_.selected_J1Adu_ {
+    background: var(--nc-accent-soft);
+}
+.membersGroup_86es0b {
+    letter-spacing: 0.06em;
+}
+
+/* =========================================================================
+   11. FLOATING UI: menus, tooltips, popouts, modals
+   ========================================================================= */
+.menu_M3qk4j {
+    background: var(--nc-sheen), var(--nc-glass) !important;
+    backdrop-filter: var(--nc-blur);
+    border: 1px solid var(--nc-line-2) !important;
+    border-radius: var(--nc-radius-md);
+    box-shadow: var(--nc-edge), var(--nc-shadow);
+}
+.item_M3qk4j {
+    border-radius: 7px;
+    transition:
+        background-color var(--nc-fast) var(--nc-ease),
+        color var(--nc-fast) var(--nc-ease),
+        padding var(--nc-med) var(--nc-ease);
+}
+.item_M3qk4j.focused_M3qk4j {
+    background: linear-gradient(90deg, color-mix(in oklab, var(--nc-accent) 26%, transparent), var(--nc-accent-softer));
+    color: var(--nc-text-strong);
+    padding-inline-start: 12px;
+    box-shadow: var(--nc-edge);
+}
+.item_M3qk4j.colorDanger_M3qk4j.focused_M3qk4j {
+    background: linear-gradient(90deg, color-mix(in oklab, #f26d7d 28%, transparent), color-mix(in oklab, #f26d7d 10%, transparent));
+    color: #ffa3ae;
+}
+
+.tooltipPrimary_3_v8qp {
+    --tooltip-pointer-bg: var(--nc-surface-3);
+    background: var(--nc-sheen), var(--nc-surface-3);
+    border: 1px solid var(--nc-line-2);
+    border-radius: var(--nc-radius-sm);
+    box-shadow: var(--nc-edge), var(--shadow-medium);
+}
+.tooltipPrimary_3_v8qp .tooltipPointer_3_v8qp {
+    border-top-color: var(--nc-surface-3);
+}
+
+.outer_P1YEjQ {
+    border-radius: var(--nc-radius-lg);
+    box-shadow: var(--nc-edge), var(--nc-shadow);
+}
+
+.root__KoJTP {
+    background-image: var(--nc-sheen);
+    border: 1px solid var(--nc-line-2);
+    border-radius: var(--nc-radius-lg);
+    box-shadow: var(--nc-edge), var(--nc-shadow);
+}
+
+/* =========================================================================
+   12. CONTROLS
+   ========================================================================= */
+.button_9OQtot {
+    transition:
+        transform var(--nc-fast) var(--nc-ease),
+        filter var(--nc-fast) var(--nc-ease),
+        box-shadow var(--nc-med) var(--nc-ease),
+        background-color var(--nc-fast) var(--nc-ease),
+        background-position var(--nc-slow) var(--nc-ease);
+}
+.button_9OQtot:not(:disabled):hover {
+    filter: brightness(1.08);
+}
+.button_9OQtot:not(:disabled):active {
+    transform: scale(0.96);
+}
+
+/* Filled buttons: glossy top edge + a light streak on hover */
+.lookFilled_9OQtot {
+    overflow: hidden;
+    background-image: var(--nc-sheen);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 2px 8px -2px rgb(0 0 0 / 0.45);
+}
+.lookFilled_9OQtot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.22) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0s;
+}
+.lookFilled_9OQtot:not(:disabled):hover::after {
+    transform: translateX(130%);
+    transition: transform 700ms var(--nc-ease);
+}
+
+/* Brand buttons: gradient that shifts on hover */
+.lookFilled_9OQtot.colorBrand_9OQtot:not(:disabled) {
+    background:
+        var(--nc-sheen),
+        linear-gradient(120deg, var(--nc-accent-strong), color-mix(in oklab, var(--nc-accent-strong) 50%, var(--nc-accent-2)), var(--nc-accent-strong));
+    background-size: 100% 100%, 220% 100%;
+    background-position: 0 0, 0% 0;
+}
+.lookFilled_9OQtot.colorBrand_9OQtot:not(:disabled):hover {
+    background-position: 0 0, 100% 0;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), var(--nc-glow);
+}
+
+.inputDefault_cZux1n {
+    border-radius: var(--nc-radius-sm);
+    transition: border-color var(--nc-med) var(--nc-ease), box-shadow var(--nc-med) var(--nc-ease);
+}
+.inputDefault_cZux1n:focus {
+    box-shadow: 0 0 0 3px var(--nc-accent-softer);
+}
+
+/* Settings sidebar tabs */
+.side_6zZYhF .item_6zZYhF {
+    border-radius: var(--nc-radius-sm);
+    transition:
+        background-color var(--nc-fast) var(--nc-ease),
+        color var(--nc-fast) var(--nc-ease),
+        transform var(--nc-med) var(--nc-ease-spring);
+}
+.side_6zZYhF .item_6zZYhF:hover {
+    transform: translateX(3px);
+}
+.side_6zZYhF .item_6zZYhF.selected_6zZYhF {
+    background: linear-gradient(90deg, color-mix(in oklab, var(--nc-accent) 24%, transparent), var(--nc-accent-softer));
+    color: var(--nc-text-strong);
+    box-shadow: var(--nc-edge);
+}
+
+:is(.thin_tqapBM, .auto_tqapBM)::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255 255 255 / 0.2);
+}
+
+/* =========================================================================
+   13. ANIMATIONS: skipped when "Reduce motion" is on (Discord or OS)
+   ========================================================================= */
+@keyframes nc-pop {
+    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-fade-up {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-slide-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes nc-drift {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+    50%  { transform: translate3d(-6%, 4%, 0) rotate(8deg) scale(1.08); }
+    100% { transform: translate3d(5%, -3%, 0) rotate(-6deg) scale(1.02); }
+}
+@keyframes nc-breathe {
+    0%, 100% { box-shadow: var(--nc-edge), 0 0 0 4px var(--nc-accent-softer), 0 10px 30px -12px rgb(0 0 0 / 0.6); }
+    50%      { box-shadow: var(--nc-edge), 0 0 0 5px var(--nc-accent-soft), 0 10px 34px -10px color-mix(in oklab, var(--nc-accent) 30%, transparent); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html:not(.reduce-motion) .bg_Fd0FEH::before {
+        animation: nc-drift var(--nc-ambient-speed) ease-in-out infinite alternate;
+    }
+
+    /* Menus pop in; their items cascade in one after another */
+    html:not(.reduce-motion) .menu_M3qk4j {
+        animation: nc-pop var(--nc-med) var(--nc-ease) both;
+        transform-origin: top left;
+    }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j {
+        animation: nc-slide-in var(--nc-med) var(--nc-ease) both;
+    }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(2) { animation-delay: 20ms; }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(3) { animation-delay: 40ms; }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(4) { animation-delay: 60ms; }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(5) { animation-delay: 80ms; }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(6) { animation-delay: 100ms; }
+    html:not(.reduce-motion) .menu_M3qk4j .item_M3qk4j:nth-child(n+7) { animation-delay: 120ms; }
+
+    html:not(.reduce-motion) .tooltip_3_v8qp {
+        animation: nc-fade-up var(--nc-fast) var(--nc-ease) both;
+    }
+    html:not(.reduce-motion) .outer_P1YEjQ {
+        animation: nc-pop var(--nc-slow) var(--nc-ease-spring) both;
+    }
+    html:not(.reduce-motion) .root__KoJTP {
+        animation: nc-pop var(--nc-slow) var(--nc-ease-spring) both;
+    }
+
+    /* Switching channels: content fades and rises in */
+    html:not(.reduce-motion) .chatContent_z_gUBg {
+        animation: nc-fade var(--nc-med) var(--nc-ease) both;
+    }
+    html:not(.reduce-motion) .messagesWrapper_8AE1Qq {
+        animation: nc-fade-up var(--nc-slow) var(--nc-ease) both;
+    }
+
+    /* The focused message box gently breathes */
+    html:not(.reduce-motion) .channelTextArea_2x8-Qn:focus-within .scrollableContainer_2x8-Qn {
+        animation: nc-breathe 3.2s ease-in-out infinite;
+    }
+}
+
+/* Reduce motion: also drop the hover movement */
+@media (prefers-reduced-motion: reduce) {
+    .blobContainer_IaPwK5:hover,
+    [data-list-item-id^="channels___"]:hover,
+    .container_J1Adu_:hover,
+    .reaction_MmKct8:hover,
+    .side_6zZYhF .item_6zZYhF:hover,
+    .message_SY_P2T:hover .avatar_2i8Bfm,
+    .channelTextArea_2x8-Qn .button_2x8-Qn:hover {
+        transform: none;
+    }
+    .lookFilled_9OQtot::after {
+        display: none;
+    }
+}
+html.reduce-motion :is(.blobContainer_IaPwK5, [data-list-item-id^="channels___"], .container_J1Adu_, .reaction_MmKct8, .side_6zZYhF .item_6zZYhF, .channelTextArea_2x8-Qn .button_2x8-Qn):hover,
+html.reduce-motion .message_SY_P2T:hover .avatar_2i8Bfm {
+    transform: none;
+}
+html.reduce-motion .lookFilled_9OQtot::after {
+    display: none;
+}
+
+/* =========================================================================
+   14. MOTION EVERYWHERE
+   All of this sits inside the motion guard, so reduce motion (Discord or
+   OS) turns it off. Entrance animations use "backwards" fill so they
+   never hold a transform that would block the hover effects.
+   ========================================================================= */
+@keyframes nc-msg-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.985); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-pop-bounce {
+    0%   { opacity: 0; transform: scale(0.6); }
+    60%  { opacity: 1; transform: scale(1.12); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes nc-drop {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes nc-wiggle {
+    0%, 100% { transform: scale(1.3) rotate(0deg); }
+    25%      { transform: scale(1.3) rotate(-10deg); }
+    75%      { transform: scale(1.3) rotate(10deg); }
+}
+@keyframes nc-tilt {
+    0%, 100% { transform: rotate(0deg); }
+    30%      { transform: rotate(-6deg); }
+    65%      { transform: rotate(4deg); }
+}
+@keyframes nc-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.1); }
+}
+@keyframes nc-shimmer {
+    from { background-position: 0% 50%; }
+    to   { background-position: 200% 50%; }
+}
+@keyframes nc-flow {
+    from { background-position: 50% 0%; }
+    to   { background-position: 50% 200%; }
+}
+@keyframes nc-glow-pulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+}
+@keyframes nc-dot {
+    0%, 100% { background-color: var(--nc-text-muted); transform: translateY(0); }
+    50%      { background-color: var(--nc-accent); transform: translateY(-2px); }
+}
+@keyframes nc-ring {
+    from { box-shadow: 0 0 0 0 color-mix(in oklab, var(--nc-accent) 45%, transparent); }
+    to   { box-shadow: 0 0 0 3px var(--nc-accent-softer); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+    /* ---- Chat ------------------------------------------------------- */
+
+    /* Messages glide up into place as they appear */
+    html:not(.reduce-motion) .messageListItem_SY_P2T {
+        animation: nc-msg-in var(--nc-slow) var(--nc-ease) backwards;
+    }
+    /* Channel header drops in when you switch channels */
+    html:not(.reduce-motion) .title_z_gUBg {
+        animation: nc-drop var(--nc-slow) var(--nc-ease) backwards;
+    }
+    /* Message box rises in */
+    html:not(.reduce-motion) .channelTextArea_2x8-Qn {
+        animation: nc-rise var(--nc-slow) var(--nc-ease-spring) 60ms backwards;
+    }
+    /* Embeds and attachments pop in */
+    html:not(.reduce-motion) :is(.embedFull_XyW1ZT, .mosaicItem_BwHv05) {
+        animation: nc-pop var(--nc-slow) var(--nc-ease) backwards;
+    }
+    /* Reactions bounce in when added */
+    html:not(.reduce-motion) .reaction_MmKct8 {
+        animation: nc-pop-bounce var(--nc-slow) var(--nc-ease-spring) backwards;
+    }
+
+    /* Images lift and zoom a touch on hover */
+    html:not(.reduce-motion) .imageWrapper_W6wEGA {
+        transition: transform var(--nc-med) var(--nc-ease-spring), box-shadow var(--nc-med) var(--nc-ease);
+    }
+    html:not(.reduce-motion) .imageWrapper_W6wEGA:hover {
+        transform: translateY(-2px) scale(1.015);
+        box-shadow: 0 14px 30px -12px rgb(0 0 0 / 0.7);
+    }
+
+    /* Emoji in messages wiggle when hovered */
+    html:not(.reduce-motion) .messageContent_2i8Bfm img.emoji {
+        transition: transform var(--nc-med) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) .messageContent_2i8Bfm img.emoji:hover {
+        transform: scale(1.3);
+        animation: nc-wiggle 420ms ease-in-out;
+    }
+
+    /* Links: a gradient underline sweeps in on hover */
+    html:not(.reduce-motion) .markup_ku1OHH a {
+        background-image: linear-gradient(90deg, var(--nc-accent), var(--nc-accent-2));
+        background-repeat: no-repeat;
+        background-position: 0 100%;
+        background-size: 0% 1.5px;
+        transition: background-size var(--nc-med) var(--nc-ease), color var(--nc-fast) var(--nc-ease);
+    }
+    html:not(.reduce-motion) .markup_ku1OHH a:hover {
+        background-size: 100% 1.5px;
+        text-decoration: none;
+    }
+
+    /* Code blocks glow on hover */
+    html:not(.reduce-motion) .markup_ku1OHH pre {
+        transition: border-color var(--nc-med) var(--nc-ease), box-shadow var(--nc-med) var(--nc-ease);
+    }
+    html:not(.reduce-motion) .markup_ku1OHH pre:hover {
+        border-color: color-mix(in oklab, var(--nc-accent) 35%, transparent);
+        box-shadow: var(--nc-edge), 0 0 22px -8px color-mix(in oklab, var(--nc-accent) 45%, transparent);
+    }
+
+    /* Blockquote bars flow with colour */
+    html:not(.reduce-motion) .blockquoteDivider_ku1OHH {
+        background: linear-gradient(180deg, var(--nc-accent), var(--nc-accent-2), var(--nc-accent));
+        background-size: 100% 200%;
+        animation: nc-flow 3s linear infinite;
+    }
+
+    /* Mentions: the side bar softly pulses */
+    html:not(.reduce-motion) .mentioned_SY_P2T::before {
+        animation: nc-glow-pulse 2.4s ease-in-out infinite;
+    }
+
+    /* Typing indicator dots bounce in the accent colour */
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz {
+        animation: nc-dot 1.2s ease-in-out infinite;
+    }
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz:nth-child(2) { animation-delay: 0.15s; }
+    html:not(.reduce-motion) .typing_U9Tvvz .dot_U9Tvvz:nth-child(3) { animation-delay: 0.3s; }
+
+    /* ---- Server bar ------------------------------------------------- */
+
+    /* Icons bounce in on load; the icon itself wobbles on hover */
+    html:not(.reduce-motion) .blobContainer_IaPwK5 {
+        animation: nc-pop-bounce var(--nc-slow) var(--nc-ease-spring) backwards;
+    }
+    html:not(.reduce-motion) .blobContainer_IaPwK5:hover .wrapper_JJ-hgR {
+        animation: nc-tilt 520ms var(--nc-ease);
+    }
+    /* Selected / unread pill springs and wears the accent gradient */
+    html:not(.reduce-motion) .item__o8_Xq {
+        background: linear-gradient(180deg, var(--nc-accent), var(--nc-accent-2));
+        transition:
+            height var(--nc-med) var(--nc-ease-spring),
+            opacity var(--nc-med) var(--nc-ease),
+            transform var(--nc-med) var(--nc-ease-spring) !important;
+    }
+    /* Separators shimmer */
+    html:not(.reduce-motion) .guildSeparator_3WHVfy {
+        background: linear-gradient(90deg, transparent, var(--nc-line-3), var(--nc-accent), var(--nc-line-3), transparent);
+        background-size: 200% 100%;
+        animation: nc-shimmer 4s linear infinite;
+    }
+    /* Mention badges bounce in, then gently pulse */
+    html:not(.reduce-motion) .numberBadge_lMvXrQ {
+        animation:
+            nc-pop-bounce var(--nc-slow) var(--nc-ease-spring) backwards,
+            nc-pulse 2.4s ease-in-out 0.6s infinite;
+    }
+
+    /* ---- Channel list ----------------------------------------------- */
+
+    /* Channels cascade in when you open a server */
+    html:not(.reduce-motion) [data-list-item-id^="channels___"] {
+        animation: nc-slide-in var(--nc-slow) var(--nc-ease) backwards;
+    }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(2) [data-list-item-id^="channels___"] { animation-delay: 20ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(3) [data-list-item-id^="channels___"] { animation-delay: 40ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(4) [data-list-item-id^="channels___"] { animation-delay: 60ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(5) [data-list-item-id^="channels___"] { animation-delay: 80ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(6) [data-list-item-id^="channels___"] { animation-delay: 100ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(7) [data-list-item-id^="channels___"] { animation-delay: 120ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(8) [data-list-item-id^="channels___"] { animation-delay: 140ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(9) [data-list-item-id^="channels___"] { animation-delay: 160ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(10) [data-list-item-id^="channels___"] { animation-delay: 180ms; }
+    html:not(.reduce-motion) .sidebarList_pog62O li:nth-child(n+11) [data-list-item-id^="channels___"] { animation-delay: 200ms; }
+
+    /* Channel icons tilt on hover */
+    html:not(.reduce-motion) [data-list-item-id^="channels___"] svg {
+        transition: transform var(--nc-med) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) [data-list-item-id^="channels___"]:hover svg {
+        transform: scale(1.15) rotate(-8deg);
+    }
+
+    /* ---- Header toolbar + user panel -------------------------------- */
+
+    html:not(.reduce-motion) .toolbar_ybUK7Z .iconWrapper_ybUK7Z {
+        transition: transform var(--nc-med) var(--nc-ease-spring), color var(--nc-fast) var(--nc-ease);
+    }
+    html:not(.reduce-motion) .toolbar_ybUK7Z .iconWrapper_ybUK7Z:hover {
+        transform: translateY(-2px) scale(1.12);
+    }
+    html:not(.reduce-motion) .toolbar_ybUK7Z .iconWrapper_ybUK7Z:active {
+        transform: scale(0.9);
+    }
+
+    /* User panel rises in; its buttons bounce and the settings cog spins */
+    html:not(.reduce-motion) .panels_pog62O {
+        animation: nc-rise var(--nc-slow) var(--nc-ease-spring) backwards;
+    }
+    html:not(.reduce-motion) .buttons_g6VwXp > * {
+        transition: transform var(--nc-med) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) .buttons_g6VwXp > *:hover {
+        transform: translateY(-2px) scale(1.1);
+    }
+    html:not(.reduce-motion) .buttons_g6VwXp > *:active {
+        transform: scale(0.9);
+    }
+    html:not(.reduce-motion) .buttons_g6VwXp > :last-child svg {
+        transition: transform var(--nc-slow) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) .buttons_g6VwXp > :last-child:hover svg {
+        transform: rotate(90deg);
+    }
+    html:not(.reduce-motion) .avatar_g6VwXp {
+        transition: transform var(--nc-med) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) .avatar_g6VwXp:hover {
+        transform: scale(1.08) rotate(-3deg);
+    }
+
+    /* ---- Member list ------------------------------------------------ */
+
+    html:not(.reduce-motion) .container_J1Adu_ {
+        animation: nc-slide-in var(--nc-slow) var(--nc-ease) backwards;
+    }
+    html:not(.reduce-motion) .membersGroup_86es0b {
+        animation: nc-fade-up var(--nc-slow) var(--nc-ease) backwards;
+    }
+    html:not(.reduce-motion) .avatar_J1Adu_ {
+        transition: transform var(--nc-med) var(--nc-ease-spring);
+    }
+    html:not(.reduce-motion) .container_J1Adu_:hover .avatar_J1Adu_ {
+        transform: scale(1.1);
+    }
+
+    /* ---- Controls --------------------------------------------------- */
+
+    html:not(.reduce-motion) .lookFilled_9OQtot:not(:disabled):hover {
+        transform: translateY(-1px);
+    }
+    html:not(.reduce-motion) .lookFilled_9OQtot:not(:disabled):active {
+        transform: translateY(0) scale(0.95);
+    }
+    html:not(.reduce-motion) .inputDefault_cZux1n:focus {
+        animation: nc-ring var(--nc-med) var(--nc-ease) both;
+    }
+
+    /* Settings: the tab list cascades in */
+    html:not(.reduce-motion) .side_6zZYhF > * {
+        animation: nc-slide-in var(--nc-slow) var(--nc-ease) backwards;
+    }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(2) { animation-delay: 15ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(3) { animation-delay: 30ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(4) { animation-delay: 45ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(5) { animation-delay: 60ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(6) { animation-delay: 75ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(7) { animation-delay: 90ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(8) { animation-delay: 105ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(9) { animation-delay: 120ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(10) { animation-delay: 135ms; }
+    html:not(.reduce-motion) .side_6zZYhF > :nth-child(n+11) { animation-delay: 150ms; }
+
+    /* Tooltips spring in with a touch of scale */
+    html:not(.reduce-motion) .tooltip_3_v8qp {
+        animation: nc-pop var(--nc-fast) var(--nc-ease-spring) backwards;
+    }
+}
